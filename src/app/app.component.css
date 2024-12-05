@@ -1,0 +1,7 @@
+mat-toolbar {
+  background-color: rgb(64, 115, 203);
+}
+
+mat-toolbar-row a {
+  color: white; /* Ganti dengan warna yang Anda inginkan */
+}
