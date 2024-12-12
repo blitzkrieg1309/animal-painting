@@ -5,6 +5,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [CartViewComponent],
@@ -14,6 +15,7 @@ import { MatDividerModule } from '@angular/material/divider';
     MatListModule,
     MatButtonModule,
     MatDividerModule,
+    FormsModule,
   ],
 })
 export class CartModule {}

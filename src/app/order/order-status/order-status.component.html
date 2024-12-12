@@ -1,0 +1,170 @@
+<div class="container">
+  <h2>Your Orders</h2>
+
+  <section class="h-100 gradient-custom">
+    <div class="container py-5 h-100">
+      <div
+        class="row d-flex justify-content-center align-items-center h-100"
+        *ngIf="orders.length > 0; else noOrders"
+      >
+        <div
+          class="col-lg-10 col-xl-8"
+          *ngFor="let order of orders"
+          class="order-card"
+        >
+          <div class="card" style="border-radius: 10px">
+            <div class="card-header px-4 py-5">
+              <h5 class="text-muted mb-0">
+                Thanks for your Order,
+                <span style="color: #212529">{{ order.username }}</span
+                >!
+              </h5>
+            </div>
+            <div class="card-body p-4">
+              <div
+                class="d-flex justify-content-between align-items-center mb-4"
+              >
+                <p class="lead fw-normal mb-0" style="color: #212529">
+                  Receipt
+                </p>
+                <p class="small text-muted mb-0">
+                  ORDER ID : {{ order.order_id }}
+                </p>
+              </div>
+
+              <div
+                class="card shadow-0 border mb-4"
+                *ngFor="let item of order.items"
+              >
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-2">
+                      <img
+                        [src]="'/images/' + item.image_url"
+                        alt="{{ item.name }}"
+                        class="img-fluid"
+                      />
+                    </div>
+                    <div
+                      class="col-md-2 text-center d-flex justify-content-center align-items-center"
+                    >
+                      <p class="text-muted mb-0">{{ item.name }}</p>
+                    </div>
+                    <div
+                      class="col-md-2 text-center d-flex justify-content-center align-items-center"
+                    >
+                      <p class="text-muted mb-0 small">&nbsp;</p>
+                    </div>
+                    <div
+                      class="col-md-2 text-center d-flex justify-content-center align-items-center"
+                    >
+                      <p class="text-muted mb-0 small">&nbsp;</p>
+                    </div>
+                    <div
+                      class="col-md-2 text-center d-flex justify-content-center align-items-center"
+                    >
+                      <p class="text-muted mb-0 small">
+                        Qty: {{ item.quantity }}
+                      </p>
+                    </div>
+                    <div
+                      class="col-md-2 text-center d-flex justify-content-center align-items-center"
+                    >
+                      <p class="text-muted mb-0 small">
+                        {{ item.price | currency : "USD" }}
+                      </p>
+                    </div>
+                  </div>
+                  <hr
+                    class="mb-4"
+                    style="background-color: #e0e0e0; opacity: 1"
+                  />
+                  <div class="row d-flex align-items-center">
+                    <div class="col-md-2">
+                      <p class="text-muted mb-0 small">Track Order</p>
+                    </div>
+                  </div>
+
+                  <div
+                    class="progress"
+                    style="height: 6px; border-radius: 16px"
+                  >
+                    <div
+                      class="progress-bar"
+                      role="progressbar"
+                      [style.width]="getProgressPercentage(order.status) + '%'"
+                      [ngStyle]="{
+                        'background-color': getProgressColor(order.status)
+                      }"
+                      attr.aria-valuenow="{{
+                        getProgressPercentage(order.status)
+                      }}"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    ></div>
+                  </div>
+                  <div class="d-flex justify-content-around mb-1">
+                    <p
+                      class="mt-1 mb-0 small ms-xl-5"
+                      *ngFor="let label of getProgressLabel(order.status)"
+                    >
+                      {{ label }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between pt-2">
+                <p class="fw-bold mb-0">Order Details</p>
+                <p class="text-muted mb-0">
+                  <span class="fw-bold me-4">Total</span>
+                  {{ order.total_price | currency : "USD" }}
+                </p>
+              </div>
+
+              <div class="d-flex justify-content-between pt-2">
+                <p class="text-muted mb-0">
+                  Invoice Number : {{ order.order_date }}
+                </p>
+                <p class="text-muted mb-0">
+                  <span class="fw-bold me-4">Delivery Charges</span> Free
+                </p>
+              </div>
+
+              <div class="d-flex justify-content-between">
+                <p class="text-muted mb-0">
+                  Invoice Date : {{ order.order_date | date }}
+                </p>
+              </div>
+
+              <div class="d-flex justify-content-between mb-5">
+                <p class="text-muted mb-0">ORDER ID : {{ order.order_id }}</p>
+              </div>
+            </div>
+            <div
+              class="card-footer border-0 px-4 py-5"
+              style="
+                background-color: #212529;
+                border-bottom-left-radius: 10px;
+                border-bottom-right-radius: 10px;
+              "
+            >
+              <h5
+                class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0"
+              >
+                Total paid:
+                <span class="h2 mb-0 ms-2">{{
+                  order.total_price | currency : "USD"
+                }}</span>
+              </h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <ng-template #noOrders>
+    <p>You have no orders.</p>
+  </ng-template>
+</div>

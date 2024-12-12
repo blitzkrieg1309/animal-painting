@@ -9,9 +9,21 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { CartModule } from './cart/cart.module';
+import { RegistrationFormComponent } from './registration-form/registration-form.component';
+import { ReactiveFormsModule } from '@angular/forms';
+import { LoginComponent } from './login/login/login.component';
+import { OrderStatusComponent } from './order/order-status/order-status.component';
+import { AdminDashboardComponent } from './admin/admin-dashboard/admin-dashboard.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    RegistrationFormComponent,
+    LoginComponent,
+    OrderStatusComponent,
+    AdminDashboardComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -20,6 +32,8 @@ import { CartModule } from './cart/cart.module';
     MatToolbarModule,
     MatButtonModule,
     CartModule,
+    ReactiveFormsModule,
+    FormsModule,
   ],
   providers: [provideAnimationsAsync()],
   bootstrap: [AppComponent],

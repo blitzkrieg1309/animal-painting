@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { CartService } from '../cart.service';
 import { Product } from '../../models/product';
 import { toArray } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { NgModel } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-cart-view',
@@ -11,31 +14,84 @@ import { toArray } from 'rxjs';
   styleUrl: './cart-view.component.css',
 })
 export class CartViewComponent implements OnInit {
-  cartItems: Product[] = [];
+  cartItems: any[] = [];
   totalPrice: number = 0;
+  totalItems: number = 0;
 
-  constructor(private cartService: CartService) {}
+  constructor(
+    private cartService: CartService,
+    private snackBar: MatSnackBar
+  ) {}
 
   ngOnInit(): void {
-    this.cartService.getCartItems().subscribe((data) => {
-      this.cartItems = data;
-      this.totalPrice = this.getTotalPrice();
+    this.loadCart();
+  }
+
+  loadCart(): void {
+    this.cartService.getCartItems().subscribe((response) => {
+      console.log('Cart items response:', response); // Debug respons API
+      if (response.success) {
+        this.cartItems = response.cart_items.map((item: any) => ({
+          ...item,
+          product_id: item.product_id || item.id, // Pastikan `product_id` ada
+        }));
+        // hitung totalPrice
+        this.totalPrice = this.cartItems.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        );
+        this.totalItems = this.cartItems.reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
+      }
     });
   }
 
-  getTotalPrice(): number {
-    let total: number = 0;
-    for (let item of this.cartItems) {
-      total += item.price;
-    }
-    return total;
-  }
+  clearCart(cartId: number): void {
+    this.cartService.softDeleteCartItem(cartId).subscribe((response) => {
+      if (response.success) {
+        // Filter item yang dihapus dari tampilan
+        this.cartItems = this.cartItems.filter(
+          (item) => item.cart_id !== cartId
+        );
 
-  clearCart(): void {
-    this.cartService.clearCart().subscribe();
+        // perbarui totalPrice dan totalItems
+        this.updateCartSummary();
+      }
+    });
   }
 
   checkOut(): void {
-    this.cartService.checkOut(this.cartItems).subscribe();
+    const payload = this.cartItems.map((item) => ({
+      product_id: item.product_id, // Pastikan `product_id` ada
+      quantity: item.quantity,
+      price: parseFloat(item.price), // Pastikan `price` adalah angka
+    }));
+
+    this.cartService.checkOut(payload).subscribe({
+      next: (response) => {
+        console.log('Checkout successful:', response);
+        this.cartItems = []; // Bersihkan keranjang setelah checkout
+        this.updateCartSummary();
+      },
+      error: (error) => {
+        console.error('Checkout failed:', error);
+      },
+    });
+  }
+
+  updateCartSummary(): void {
+    // Hitung total harga
+    this.totalPrice = this.cartItems.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0 // Nilai awal untuk reduce
+    );
+
+    // Hitung total item
+    this.totalItems = this.cartItems.reduce(
+      (sum, item) => sum + item.quantity,
+      0 // Nilai awal untuk reduce
+    );
   }
 }

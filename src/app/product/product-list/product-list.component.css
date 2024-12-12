@@ -18,3 +18,20 @@ mat-card {
 .sort-menu {
   margin-left: 20px;
 }
+
+.card-container {
+  display: flex; /* Aktifkan Flexbox */
+  flex-wrap: wrap; /* Elemen turun ke baris berikutnya jika tidak muat */
+  gap: 10px; /* Jarak antar elemen */
+  justify-content: flex-start; /* Elemen rata ke kiri */
+}
+
+.card {
+  margin: 10px; /* Tambahkan margin jika diperlukan */
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+}

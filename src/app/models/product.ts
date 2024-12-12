@@ -4,3 +4,14 @@ export class Product {
   price: number = 0;
   image_url: string = '';
 }
+
+export interface ProductApiResponse {
+  success: boolean;
+  message: string;
+  user: {
+    id: number;
+    username: string;
+    email: string;
+  };
+  products: Product[];
+}

@@ -1,0 +1,109 @@
+<div class="container">
+  <h2>Admin Dashboard</h2>
+
+  <div class="container">
+    <h2>Add New Product</h2>
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="name" class="form-label">Product Name</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          class="form-control"
+          placeholder="Enter product name"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="price" class="form-label">Price (USD)</label>
+        <input
+          type="number"
+          id="price"
+          formControlName="price"
+          class="form-control"
+          placeholder="Enter price"
+        />
+      </div>
+
+      <div class="mb-3">
+        <label for="image" class="form-label">Product Image</label>
+        <input
+          type="file"
+          id="image"
+          (change)="onFileChange($event)"
+          class="form-control"
+          accept="image/*"
+        />
+      </div>
+
+      <button type="submit" class="btn btn-primary">Add Product</button>
+    </form>
+  </div>
+
+  <h3>Orders</h3>
+  <div *ngIf="orders.length > 0; else noOrders">
+    <table class="table align-middle mb-0 bg-white">
+      <thead class="bg-light">
+        <tr>
+          <th>Order ID</th>
+          <th>Order Date</th>
+          <th>User</th>
+          <th>Status</th>
+          <th>Total Price</th>
+          <th>Items</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let order of orders">
+          <td>
+            <div class="d-flex align-items-center">
+              <div class="ms-3">
+                <p class="fw-bold mb-1">{{ order.order_id }}</p>
+              </div>
+            </div>
+          </td>
+          <td>
+            <p class="fw-normal mb-1">{{ order.order_date | date }}</p>
+          </td>
+          <td>
+            <span>{{ order.username }}</span>
+          </td>
+          <td>{{ order.status }}</td>
+          <td>
+            <span>{{ order.total_price | currency : "USD" }}</span>
+          </td>
+          <td>
+            <ul class="order-card">
+              <li *ngFor="let item of order.items">
+                <span>
+                  {{ item.name }} - {{ item.quantity }} pcs -
+                  {{ item.price | currency : "USD" }}
+                </span>
+              </li>
+            </ul>
+          </td>
+          <td>
+            <div class="dropdown align-items-center">
+              <select
+                class="btn dropdown-toggle"
+                [(ngModel)]="order.status"
+                (change)="updateOrderStatus(order.order_id, order.status)"
+              >
+                <option value="on process">On Process</option>
+                <option value="shipped">Shipped</option>
+                <option value="received">Received</option>
+                <option value="cancel by seller">Cancel by Seller</option>
+              </select>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-template #noOrders>
+    <p>No orders available.</p>
+  </ng-template>
+</div>

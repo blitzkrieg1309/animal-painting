@@ -1,0 +1,52 @@
+.container {
+  margin: 20px;
+}
+
+.order-card {
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+
+.order-card h3 {
+  margin: 0;
+}
+
+.order-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.order-card ul li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.order-card ul li img {
+  width: 50px;
+  height: 50px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+}
+
+.fw-bold {
+  font-weight: bold;
+}
+
+.text-danger {
+  color: red;
+}
+
+.text-dark {
+  color: black;
+}
+
+.text-warning {
+  color: orange;
+}
+
+.text-success {
+  color: green;
+}

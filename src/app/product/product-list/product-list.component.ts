@@ -9,30 +9,55 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   standalone: false,
 
   templateUrl: './product-list.component.html',
-  styleUrl: './product-list.component.css',
+  styleUrls: ['./product-list.component.css'], // Perbaiki `styleUrls`
 })
 export class ProductListComponent implements OnInit {
+  products: Product[] = [];
+  filteredProducts: Product[] = [];
+  sortOrder: string = '';
+
   constructor(
     private productService: ProductService,
     private cartService: CartService,
     private snackBar: MatSnackBar
   ) {}
 
-  products: Product[] = [];
-  filteredProducts: Product[] = [];
-  sortOrder: string = '';
-
   ngOnInit(): void {
-    this.productService.getProducts().subscribe((data) => {
-      this.products = data;
-      this.filteredProducts = data;
-    });
+    // Fetch products dari API
+    this.productService.getProducts().subscribe(
+      (data) => {
+        // console.log('Data received from API:', data); // Debug respons API
+        if (data && data.success && Array.isArray(data.products)) {
+          this.products = data.products; // Ambil array `products` dari respons
+          this.filteredProducts = data.products; // Set array `products` ke filteredProducts
+          // console.log(this.filteredProducts);
+        } else {
+          console.error('Invalid API response format:', data);
+        }
+      },
+      (error) => {
+        console.error('Error fetching products:', error); // Debug jika terjadi error
+      }
+    );
   }
 
+  // Menambahkan produk ke cart
   addToCart(product: Product): void {
-    this.cartService.addToCart(product).subscribe({
-      next: () => {
+    const productId = product.id; // Ambil ID produk
+    const quantity = 1; // Default quantity, bisa diubah sesuai kebutuhan
+
+    this.cartService.addToCart(productId, quantity).subscribe({
+      next: (response) => {
+        console.log('Added to cart response:', response); // Debug respons API
         this.snackBar.open('Added to Cart', '', {
+          duration: 2000,
+          horizontalPosition: 'right',
+          verticalPosition: 'top',
+        });
+      },
+      error: (error) => {
+        console.error('Error adding to cart:', error); // Debug jika terjadi error
+        this.snackBar.open('Failed to Add to Cart', '', {
           duration: 2000,
           horizontalPosition: 'right',
           verticalPosition: 'top',
@@ -41,18 +66,19 @@ export class ProductListComponent implements OnInit {
     });
   }
 
+  // Filter produk berdasarkan input pencarian
   applyFilter(event: Event): void {
-    let searchTearm = (event.target as HTMLInputElement).value;
-    searchTearm = searchTearm.toLowerCase();
+    let searchTearm = (event.target as HTMLInputElement).value.toLowerCase();
 
-    this.filteredProducts = this.products.filter((products) =>
-      products.name.toLowerCase().includes(searchTearm)
+    this.filteredProducts = this.products.filter((product) =>
+      product.name.toLowerCase().includes(searchTearm)
     );
 
     this.sortProduct(this.sortOrder);
   }
 
-  sortProduct(sortValue: string) {
+  // Mengurutkan produk berdasarkan harga
+  sortProduct(sortValue: string): void {
     this.sortOrder = sortValue;
 
     if (this.sortOrder === 'priceLowHigh') {
